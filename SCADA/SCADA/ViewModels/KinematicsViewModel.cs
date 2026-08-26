@@ -32,6 +32,7 @@ public partial class KinematicsViewModel : ViewModelBase
     // IK feedback
     [ObservableProperty] private string _ikStatusMessage = "Ready for IK Calculation.";
     [ObservableProperty] private bool _isIkValid = true;
+    [ObservableProperty] private string _ikStatusColor = "#10B981";
 
     // Jacobian & Dynamics readouts
     [ObservableProperty] private string _jacobianFormatted = string.Empty;
@@ -142,6 +143,7 @@ public partial class KinematicsViewModel : ViewModelBase
         var ik = _kinematicsService.InverseKinematics(Robot, Robot.TargetX, Robot.TargetY, Robot.TargetZ, Robot.TargetPitch, ElbowUp);
         IsIkValid = ik.IsReachable;
         IkStatusMessage = ik.Message;
+        IkStatusColor = IsIkValid ? "#10B981" : "#EF4444";
 
         if (ik.IsReachable)
         {

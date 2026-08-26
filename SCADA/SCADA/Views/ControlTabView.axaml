@@ -116,7 +116,7 @@
                         </Border>
 
                         <TextBlock Text="{Binding IkStatusMessage}" FontSize="11"
-                                   Foreground="{Binding IsIkValid, Converter={x:Null}}" 
+                                   Foreground="{Binding IkStatusColor}" 
                                    TextWrapping="Wrap"/>
 
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="8">

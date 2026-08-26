@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SCADA")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+091e79bf9b807266f34927d554800877c9c5ca42")]
 [assembly: System.Reflection.AssemblyProductAttribute("SCADA")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SCADA")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

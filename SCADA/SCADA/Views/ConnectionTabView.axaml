@@ -85,7 +85,7 @@
                                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Heartbeat Counter:" Foreground="#94A3B8"/>
                                 <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8">
                                     <TextBlock Text="{Binding HeartbeatCounter}" Foreground="#38BDF8" FontWeight="Bold"/>
-                                    <Ellipse Width="8" Height="8" Fill="{Binding IsHeartbeatActive, Converter={x:Null}}" 
+                                    <Ellipse Width="8" Height="8" Fill="#10B981" 
                                              IsVisible="{Binding IsHeartbeatActive}"/>
                                 </StackPanel>
 
