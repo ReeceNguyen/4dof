@@ -1,0 +1,233 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:SCADA.ViewModels"
+             xmlns:m="using:SCADA.Models"
+             x:Class="SCADA.Views.DatabaseTabView"
+             x:DataType="vm:DatabaseViewModel">
+
+    <Grid RowDefinitions="Auto,*" Margin="16" RowSpacing="14">
+        <!-- Top Database Info & Auto-Log Toolbar -->
+        <Border Grid.Row="0" Background="#1E293B" CornerRadius="8" Padding="14,10" BorderBrush="#334155" BorderThickness="1">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <!-- Left: Title -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <TextBlock Text="🗄️" FontSize="18" VerticalAlignment="Center"/>
+                    <StackPanel>
+                        <TextBlock Text="CƠ SỞ DỮ LIỆU SQLITE (HISTORIAN &amp; RECIPES)" FontWeight="Bold" FontSize="14" Foreground="#38BDF8"/>
+                        <TextBlock Text="{Binding DbStatusMessage}" Foreground="#94A3B8" FontSize="11"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Center: Stats -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Border Background="#0F172A" CornerRadius="6" Padding="10,4" BorderBrush="#334155" BorderThickness="1">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock Text="Tổng bản ghi Historian:" Foreground="#94A3B8" FontSize="11"/>
+                            <TextBlock Text="{Binding TotalRecordsCount, StringFormat='{}{0:N0}'}" Foreground="#10B981" FontWeight="Bold" FontSize="11"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- Right: Auto-Log Settings -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <TextBlock Text="Tự động ghi log:" VerticalAlignment="Center" Foreground="#94A3B8" FontSize="11"/>
+                    <ToggleSwitch IsChecked="{Binding AutoLoggingEnabled}" OnContent="Bật (ON)" OffContent="Tắt (OFF)"/>
+
+                    <TextBlock Text="Chu kỳ:" VerticalAlignment="Center" Foreground="#94A3B8" FontSize="11" Margin="8,0,0,0"/>
+                    <NumericUpDown Value="{Binding AutoLoggingIntervalMs}" Minimum="100" Maximum="10000" Increment="100" Width="130" FormatString="0 ms"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Tab Area -->
+        <TabControl Grid.Row="1" SelectedIndex="{Binding SelectedSubTabIndex}" Background="Transparent">
+            
+            <!-- 1. TELEMETRY HISTORIAN TAB -->
+            <TabItem Header="📊 Lịch sử Vận hành (Telemetry Historian)" FontSize="12" FontWeight="SemiBold">
+                <Grid RowDefinitions="Auto,*" Margin="0,12,0,0" RowSpacing="10">
+                    <!-- Filter Toolbar -->
+                    <Border Grid.Row="0" Background="#1E293B" CornerRadius="6" Padding="10,6" BorderBrush="#334155" BorderThickness="1">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                <TextBlock Text="Bộ lọc thời gian:" VerticalAlignment="Center" Foreground="#94A3B8" FontSize="11"/>
+                                <ComboBox SelectedIndex="0" Height="30" FontSize="11">
+                                    <ComboBoxItem Content="Tất cả dữ liệu"/>
+                                    <ComboBoxItem Content="5 phút gần nhất"/>
+                                    <ComboBoxItem Content="1 giờ gần nhất"/>
+                                    <ComboBoxItem Content="Hôm nay"/>
+                                </ComboBox>
+
+                                <TextBlock Text="Giới hạn:" VerticalAlignment="Center" Foreground="#94A3B8" FontSize="11" Margin="10,0,0,0"/>
+                                <NumericUpDown Value="{Binding QueryLimit}" Minimum="50" Maximum="2000" Increment="50" Width="100" Height="30" FormatString="0"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                                <Button Content="🔄 Truy vấn / Làm mới" Command="{Binding RefreshTelemetryCommand}" Background="#0284C7" Foreground="White" Height="30" Padding="10,0" FontSize="11"/>
+                                <Button Content="💾 Xuất file CSV" Command="{Binding ExportCsvCommand}" Background="#059669" Foreground="White" Height="30" Padding="10,0" FontSize="11"/>
+                                <Button Content="🗑️ Xóa log > 7 ngày" Command="{Binding PurgeOldLogsCommand}" Background="#475569" Foreground="White" Height="30" Padding="10,0" FontSize="11"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Telemetry DataGrid -->
+                    <Border Grid.Row="1" Background="#0F172A" CornerRadius="6" BorderBrush="#334155" BorderThickness="1">
+                        <DataGrid ItemsSource="{Binding TelemetryList}" AutoGenerateColumns="False" IsReadOnly="True"
+                                  GridLinesVisibility="All" Background="Transparent">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Thời gian (Timestamp)" Binding="{Binding FormattedTimestamp}" Width="160"/>
+                                <DataGridTextColumn Header="Q1 (°)" Binding="{Binding Q1, StringFormat='{}{0:F1}'}" Width="65"/>
+                                <DataGridTextColumn Header="Q2 (°)" Binding="{Binding Q2, StringFormat='{}{0:F1}'}" Width="65"/>
+                                <DataGridTextColumn Header="Q3 (°)" Binding="{Binding Q3, StringFormat='{}{0:F1}'}" Width="65"/>
+                                <DataGridTextColumn Header="Q4 (°)" Binding="{Binding Q4, StringFormat='{}{0:F1}'}" Width="65"/>
+                                <DataGridTextColumn Header="X (mm)" Binding="{Binding X, StringFormat='{}{0:F1}'}" Width="70"/>
+                                <DataGridTextColumn Header="Y (mm)" Binding="{Binding Y, StringFormat='{}{0:F1}'}" Width="70"/>
+                                <DataGridTextColumn Header="Z (mm)" Binding="{Binding Z, StringFormat='{}{0:F1}'}" Width="70"/>
+                                <DataGridTextColumn Header="Pitch (°)" Binding="{Binding Pitch, StringFormat='{}{0:F1}'}" Width="70"/>
+                                <DataGridTextColumn Header="τ1 (N·m)" Binding="{Binding Tau1, StringFormat='{}{0:F2}'}" Width="70"/>
+                                <DataGridTextColumn Header="τ2 (N·m)" Binding="{Binding Tau2, StringFormat='{}{0:F2}'}" Width="70"/>
+                                <DataGridTextColumn Header="τ3 (N·m)" Binding="{Binding Tau3, StringFormat='{}{0:F2}'}" Width="70"/>
+                                <DataGridTextColumn Header="τ4 (N·m)" Binding="{Binding Tau4, StringFormat='{}{0:F2}'}" Width="70"/>
+                                <DataGridTextColumn Header="Công suất (W)" Binding="{Binding TotalPower, StringFormat='{}{0:F2}'}" Width="95"/>
+                                <DataGridTextColumn Header="Trạng thái" Binding="{Binding PlcStatus}" Width="80"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- 2. ALARMS & EVENTS TAB -->
+            <TabItem Header="🚨 Cảnh báo &amp; Sự kiện (Alarms &amp; Events)" FontSize="12" FontWeight="SemiBold">
+                <Grid RowDefinitions="Auto,*" Margin="0,12,0,0" RowSpacing="10">
+                    <Border Grid.Row="0" Background="#1E293B" CornerRadius="6" Padding="10,6" BorderBrush="#334155" BorderThickness="1">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="Nhật ký các sự kiện bảo vệ, E-Stop, mất kết nối Watchdog và cảnh báo vị trí" Foreground="#94A3B8" FontSize="11" VerticalAlignment="Center"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                <Button Content="✅ Xác nhận cảnh báo (Ack)" Command="{Binding AcknowledgeAlarmCommand}" CommandParameter="{Binding SelectedAlarm}" Background="#059669" Foreground="White" Height="30" Padding="10,0" FontSize="11"/>
+                                <Button Content="🔄 Làm mới" Command="{Binding RefreshAlarmsCommand}" Background="#0284C7" Foreground="White" Height="30" Padding="10,0" FontSize="11"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="1" Background="#0F172A" CornerRadius="6" BorderBrush="#334155" BorderThickness="1">
+                        <DataGrid ItemsSource="{Binding AlarmList}" SelectedItem="{Binding SelectedAlarm}"
+                                  AutoGenerateColumns="False" IsReadOnly="True" GridLinesVisibility="All" Background="Transparent">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Thời gian" Binding="{Binding FormattedTimestamp}" Width="160"/>
+                                <DataGridTextColumn Header="Mức độ (Level)" Binding="{Binding EventType}" Width="110"/>
+                                <DataGridTextColumn Header="Nguồn (Source)" Binding="{Binding Source}" Width="120"/>
+                                <DataGridTextColumn Header="Nội dung thông báo (Message)" Binding="{Binding Message}" Width="*"/>
+                                <DataGridCheckBoxColumn Header="Đã xác nhận" Binding="{Binding Acknowledged}" Width="100"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- 3. RECIPES & PROGRAMS TAB -->
+            <TabItem Header="📋 Quản lý Chương trình / Công thức (Recipes)" FontSize="12" FontWeight="SemiBold">
+                <Grid ColumnDefinitions="360,*" Margin="0,12,0,0" ColumnSpacing="14">
+                    <!-- Left: Recipe List -->
+                    <Border Grid.Column="0" Background="#1E293B" CornerRadius="8" Padding="12" BorderBrush="#334155" BorderThickness="1">
+                        <Grid RowDefinitions="Auto,*,Auto" RowSpacing="8">
+                            <TextBlock Grid.Row="0" Text="DANH SÁCH CÔNG THỨC (RECIPES)" FontWeight="Bold" FontSize="12" Foreground="#38BDF8"/>
+                            
+                            <ListBox Grid.Row="1" ItemsSource="{Binding RecipeList}" SelectedItem="{Binding SelectedRecipe}"
+                                     Background="#0F172A" BorderBrush="#334155" BorderThickness="1">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:DataType="m:RecipeProgram">
+                                        <StackPanel Spacing="2">
+                                            <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="#F8FAFC" FontSize="12"/>
+                                            <TextBlock Text="{Binding Description}" Foreground="#94A3B8" FontSize="10"/>
+                                            <TextBlock Text="{Binding FormattedCreatedDate, StringFormat='Tạo: {0}'}" Foreground="#64748B" FontSize="9"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                            <!-- Actions -->
+                            <StackPanel Grid.Row="2" Spacing="6">
+                                <Button Content="📥 Tải vào Trajectory Planner" Command="{Binding LoadSelectedRecipeToPlannerCommand}"
+                                        Background="#059669" Foreground="White" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Height="32" FontWeight="SemiBold"/>
+                                <Button Content="🗑️ Xóa Công thức này" Command="{Binding DeleteSelectedRecipeCommand}"
+                                        Background="#DC2626" Foreground="White" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Height="28"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Right: Recipe Details & Save Form -->
+                    <Border Grid.Column="1" Background="#1E293B" CornerRadius="8" Padding="14" BorderBrush="#334155" BorderThickness="1">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel Spacing="12">
+                                <TextBlock Text="LƯU QUỸ ĐẠO HIỆN TẠI THÀNH CÔNG THỨC MỚI" FontWeight="Bold" FontSize="13" Foreground="#38BDF8"/>
+
+                                <Grid ColumnDefinitions="120,*" RowDefinitions="Auto,Auto" RowSpacing="8">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Tên công thức:" VerticalAlignment="Center" Foreground="#94A3B8"/>
+                                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding NewRecipeName}" PlaceholderText="Ví dụ: Gắp phôi khay 1"/>
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Mô tả chi tiết:" VerticalAlignment="Center" Foreground="#94A3B8"/>
+                                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding NewRecipeDescription}" PlaceholderText="Chuyển động gắp vật mượt mà bậc 5"/>
+                                </Grid>
+
+                                <Button Content="💾 Lưu Quỹ đạo Hiện tại vào Database"
+                                        Command="{Binding SaveCurrentTrajectoryAsRecipeCommand}"
+                                        Background="#0284C7" Foreground="White" HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center" Height="36" FontWeight="SemiBold"/>
+
+                                <Separator Background="#334155" Margin="0,6"/>
+
+                                <!-- Preview of Selected Recipe Details -->
+                                <TextBlock Text="CHI TIẾT CÔNG THỨC ĐANG CHỌN" FontWeight="Bold" FontSize="13" Foreground="#38BDF8"/>
+                                
+                                <Border Background="#0F172A" CornerRadius="6" Padding="12" BorderBrush="#334155" BorderThickness="1">
+                                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="6">
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Quy luật chuyển động:" Foreground="#94A3B8"/>
+                                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedRecipe.ProfileType}" Foreground="#F8FAFC" FontWeight="SemiBold"/>
+
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Thời gian thực thi:" Foreground="#94A3B8"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedRecipe.Duration, StringFormat='{}{0:F1} giây'}" Foreground="#F8FAFC" FontWeight="SemiBold"/>
+
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Góc khớp điểm đầu:" Foreground="#94A3B8"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="1" Foreground="#38BDF8">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="Q1:{0:F0}° Q2:{1:F0}° Q3:{2:F0}° Q4:{3:F0}°">
+                                                    <Binding Path="SelectedRecipe.StartQ1"/>
+                                                    <Binding Path="SelectedRecipe.StartQ2"/>
+                                                    <Binding Path="SelectedRecipe.StartQ3"/>
+                                                    <Binding Path="SelectedRecipe.StartQ4"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+
+                                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Góc khớp điểm đích:" Foreground="#94A3B8"/>
+                                        <TextBlock Grid.Row="3" Grid.Column="1" Foreground="#10B981">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="Q1:{0:F0}° Q2:{1:F0}° Q3:{2:F0}° Q4:{3:F0}°">
+                                                    <Binding Path="SelectedRecipe.EndQ1"/>
+                                                    <Binding Path="SelectedRecipe.EndQ2"/>
+                                                    <Binding Path="SelectedRecipe.EndQ3"/>
+                                                    <Binding Path="SelectedRecipe.EndQ4"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+
+                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Tọa độ Đề-các đích:" Foreground="#94A3B8"/>
+                                        <TextBlock Grid.Row="4" Grid.Column="1" Foreground="#F59E0B">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="X:{0:F0} Y:{1:F0} Z:{2:F0} Pitch:{3:F0}°">
+                                                    <Binding Path="SelectedRecipe.EndX"/>
+                                                    <Binding Path="SelectedRecipe.EndY"/>
+                                                    <Binding Path="SelectedRecipe.EndZ"/>
+                                                    <Binding Path="SelectedRecipe.EndPitch"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

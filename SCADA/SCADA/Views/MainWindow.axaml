@@ -1,0 +1,127 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:SCADA.ViewModels"
+        xmlns:views="using:SCADA.Views"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="800"
+        Width="1340" Height="860" MinWidth="1050" MinHeight="650"
+        x:Class="SCADA.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="4-DOF ROBOT ARM SCADA &amp; KINEMATICS CONTROL SYSTEM (MODBUS TCP / OPTA CODESYS)"
+        Background="#0B0F19">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- 1. TOP HEADER BAR -->
+        <Border Grid.Row="0" Background="#111827" BorderBrush="#1F2937" BorderThickness="0,0,0,1" Padding="16,10">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <!-- Left: Title & Subtitle -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <Border Background="#1E293B" CornerRadius="8" Width="40" Height="40">
+                        <TextBlock Text="🤖" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="4-DOF ROBOT ARM SCADA CONTROL SYSTEM" FontWeight="Bold" FontSize="16" Foreground="#F8FAFC"/>
+                        <TextBlock Text="Modbus TCP Communication • Arduino OPTA Codesys PLC • Denavit-Hartenberg Kinematics" FontSize="11" Foreground="#64748B"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Center: Live Status Badges -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <!-- PLC Status Badge -->
+                    <Border Background="#1E293B" CornerRadius="16" Padding="12,6" BorderBrush="#334155" BorderThickness="1">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <Ellipse Width="10" Height="10" Fill="{Binding PlcStatusColor}"/>
+                            <TextBlock Text="{Binding PlcStatusSummary}" Foreground="{Binding PlcStatusColor}" FontWeight="Bold" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Connection Status Badge -->
+                    <Border Background="#1E293B" CornerRadius="16" Padding="12,6" BorderBrush="#334155" BorderThickness="1">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <Ellipse Width="10" Height="10" Fill="{Binding ConnectionVM.StatusColor}"/>
+                            <TextBlock Text="{Binding ConnectionVM.StatusMessage}" Foreground="{Binding ConnectionVM.StatusColor}" FontWeight="Bold" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- Right: Quick Global Control Buttons -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <Button Content="🏠 Về vị trí Home" Command="{Binding HomeRobotCommand}"
+                            Background="#334155" Foreground="White" Height="34" Padding="10,0" FontWeight="SemiBold" FontSize="12"/>
+
+                    <Button Content="🔄 Reset Lỗi" Command="{Binding ResetErrorCommand}"
+                            Background="#475569" Foreground="White" Height="34" Padding="10,0" FontWeight="SemiBold" FontSize="12"/>
+
+                    <!-- Big Red Emergency Stop Button -->
+                    <Button Command="{Binding EmergencyStopCommand}"
+                            Background="#DC2626" Foreground="White" Height="34" Padding="14,0" FontWeight="Bold" FontSize="12">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock Text="🛑"/>
+                            <TextBlock Text="DỪNG KHẨN CẤP (E-STOP)"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- 2. MAIN TAB CONTROL -->
+        <TabControl Grid.Row="1" SelectedIndex="{Binding SelectedTabIndex}" Background="Transparent">
+            <!-- TAB 1: CONNECTION & DIAGNOSTICS -->
+            <TabItem Header="📡 Cấu hình &amp; Kiểm tra Kết nối" FontSize="13" FontWeight="SemiBold">
+                <views:ConnectionTabView DataContext="{Binding ConnectionVM}"/>
+            </TabItem>
+
+            <!-- TAB 2: KINEMATICS, CONTROL & 2D/3D SIMULATION -->
+            <TabItem Header="🤖 Điều khiển &amp; Động học Robot" FontSize="13" FontWeight="SemiBold">
+                <views:ControlTabView DataContext="{Binding KinematicsVM}"/>
+            </TabItem>
+
+            <!-- TAB 3: TRAJECTORY PLANNER & WAVEFORM PLOTS -->
+            <TabItem Header="📈 Thiết kế Quỹ đạo &amp; Đồ thị" FontSize="13" FontWeight="SemiBold">
+                <views:TrajectoryTabView DataContext="{Binding TrajectoryVM}"/>
+            </TabItem>
+
+            <!-- TAB 4: DATABASE & HISTORIAN -->
+            <TabItem Header="🗄️ Cơ sở Dữ liệu &amp; Lịch sử" FontSize="13" FontWeight="SemiBold">
+                <views:DatabaseTabView DataContext="{Binding DatabaseVM}"/>
+            </TabItem>
+        </TabControl>
+
+        <!-- 3. BOTTOM STATUS BAR -->
+        <Border Grid.Row="2" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="0,1,0,0" Padding="12,6">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <!-- Left Info -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="16">
+                    <TextBlock Text="IP:" Foreground="#64748B" FontSize="11"/>
+                    <TextBlock Text="{Binding ConnectionConfig.IpAddress}" Foreground="#94A3B8" FontSize="11" FontWeight="SemiBold"/>
+                    
+                    <TextBlock Text="Port:" Foreground="#64748B" FontSize="11"/>
+                    <TextBlock Text="{Binding ConnectionConfig.Port}" Foreground="#94A3B8" FontSize="11" FontWeight="SemiBold"/>
+
+                    <TextBlock Text="Ping:" Foreground="#64748B" FontSize="11"/>
+                    <TextBlock Text="{Binding ConnectionVM.LatencyMs, StringFormat='{}{0:F1} ms'}" Foreground="#38BDF8" FontSize="11" FontWeight="SemiBold"/>
+                </StackPanel>
+
+                <!-- Center Cartesian Readout -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="16" HorizontalAlignment="Center">
+                    <TextBlock Text="Tọa độ Tay kẹp:" Foreground="#64748B" FontSize="11"/>
+                    <TextBlock Text="{Binding Robot.X, StringFormat='X: {0:F1}'}" Foreground="#E2E8F0" FontSize="11" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding Robot.Y, StringFormat='Y: {0:F1}'}" Foreground="#E2E8F0" FontSize="11" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding Robot.Z, StringFormat='Z: {0:F1}'}" Foreground="#E2E8F0" FontSize="11" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding Robot.Pitch, StringFormat='Pitch: {0:F1}°'}" Foreground="#F59E0B" FontSize="11" FontWeight="SemiBold"/>
+                </StackPanel>
+
+                <!-- Right Angles Readout -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="12">
+                    <TextBlock Text="Góc khớp:" Foreground="#64748B" FontSize="11"/>
+                    <TextBlock Text="{Binding Robot.Q1, StringFormat='Q1: {0:F0}°'}" Foreground="#3B82F6" FontSize="11"/>
+                    <TextBlock Text="{Binding Robot.Q2, StringFormat='Q2: {0:F0}°'}" Foreground="#F97316" FontSize="11"/>
+                    <TextBlock Text="{Binding Robot.Q3, StringFormat='Q3: {0:F0}°'}" Foreground="#10B981" FontSize="11"/>
+                    <TextBlock Text="{Binding Robot.Q4, StringFormat='Q4: {0:F0}°'}" Foreground="#8B5CF6" FontSize="11"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
