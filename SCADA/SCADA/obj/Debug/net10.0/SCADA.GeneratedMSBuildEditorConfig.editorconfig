@@ -8,8 +8,8 @@ build_property.AvaloniaNameGeneratorViewFileNamingStrategy = NamespaceAndClassNa
 build_property.AvaloniaNameGeneratorAttachDevTools = true
 build_property.AvaloniaUseCompiledBindingsByDefault = true
 build_property.AvaloniaMainPackageVersion = 12.1.0
-build_property.AvaloniaPreviewerNetCoreToolPath = /home/reece/.nuget/packages/avalonia/12.1.0/buildTransitive//../tools/net8.0/designer/Avalonia.Designer.HostApp.dll
-build_property.AvaloniaResourcePaths = /home/reece/Documents/4DOF/SCADA/SCADA/Assets/avalonia-logo.ico,/home/reece/Documents/4DOF/SCADA/SCADA/App.axaml,/home/reece/Documents/4DOF/SCADA/SCADA/Views/ConnectionTabView.axaml,/home/reece/Documents/4DOF/SCADA/SCADA/Views/ControlTabView.axaml,/home/reece/Documents/4DOF/SCADA/SCADA/Views/DatabaseTabView.axaml,/home/reece/Documents/4DOF/SCADA/SCADA/Views/MainWindow.axaml,/home/reece/Documents/4DOF/SCADA/SCADA/Views/TrajectoryTabView.axaml
+build_property.AvaloniaPreviewerNetCoreToolPath = C:\Users\reece\.nuget\packages\avalonia\12.1.0\buildTransitive\\..\tools\net8.0\designer\Avalonia.Designer.HostApp.dll
+build_property.AvaloniaResourcePaths = C:\Users\reece\Documents\4dof\SCADA\SCADA\Assets\avalonia-logo.ico
 build_property.MvvmToolkitEnableINotifyPropertyChangingSupport = true
 build_property._MvvmToolkitIsUsingWindowsRuntimePack = false
 build_property.CsWinRTComponent = 
@@ -24,28 +24,29 @@ build_property.ProjectTypeGuids =
 build_property.InvariantGlobalization = 
 build_property.PlatformNeutralAssembly = 
 build_property.EnforceExtendedAnalyzerRules = 
+build_property.EntryPointFilePath = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = SCADA
-build_property.ProjectDir = /home/reece/Documents/4DOF/SCADA/SCADA/
+build_property.ProjectDir = C:\Users\reece\Documents\4dof\SCADA\SCADA\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[/home/reece/Documents/4DOF/SCADA/SCADA/App.axaml]
+[C:/Users/reece/Documents/4dof/SCADA/SCADA/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[/home/reece/Documents/4DOF/SCADA/SCADA/Views/ConnectionTabView.axaml]
+[C:/Users/reece/Documents/4dof/SCADA/SCADA/Views/ConnectionTabView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[/home/reece/Documents/4DOF/SCADA/SCADA/Views/ControlTabView.axaml]
+[C:/Users/reece/Documents/4dof/SCADA/SCADA/Views/ControlTabView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[/home/reece/Documents/4DOF/SCADA/SCADA/Views/DatabaseTabView.axaml]
+[C:/Users/reece/Documents/4dof/SCADA/SCADA/Views/DatabaseTabView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[/home/reece/Documents/4DOF/SCADA/SCADA/Views/MainWindow.axaml]
+[C:/Users/reece/Documents/4dof/SCADA/SCADA/Views/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[/home/reece/Documents/4DOF/SCADA/SCADA/Views/TrajectoryTabView.axaml]
+[C:/Users/reece/Documents/4dof/SCADA/SCADA/Views/TrajectoryTabView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
