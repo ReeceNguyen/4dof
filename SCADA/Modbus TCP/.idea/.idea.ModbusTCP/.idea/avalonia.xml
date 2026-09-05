@@ -3,6 +3,8 @@
   <component name="AvaloniaProject">
     <option name="projectPerEditor">
       <map>
+        <entry key="../MQTT/MQTT/App.axaml" value="../MQTT/MQTT/MQTT.csproj" />
+        <entry key="../MQTT/MQTT/Views/MainWindow.axaml" value="../MQTT/MQTT/MQTT.csproj" />
         <entry key="App.axaml" value="SCADA.csproj" />
         <entry key="Views/MainWindow.axaml" value="SCADA.csproj" />
         <entry key="Views/TrajectoryTabView.axaml" value="MobusTCP.csproj" />
